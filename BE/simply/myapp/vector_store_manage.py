@@ -1,8 +1,10 @@
 from langchain_community.vectorstores import FAISS
-import read_file
+# import read_file
 from langchain_community.llms import Ollama
 from langchain.chains.retrieval_qa.base import RetrievalQA
 from langchain.prompts import PromptTemplate
+
+import time
 
 
 class vectorStoreHandle():
@@ -24,7 +26,7 @@ class vectorStoreHandle():
         if self.vector_store:
             self.retriever = self.vector_store.as_retriever(search_kwargs={"k":3})
 
-        self.llm = Ollama(model="llama3")
+        self.llm = Ollama(model="llama3:8b")
 
         self.prompt = PromptTemplate(
             input_variables=["context", "question"],
@@ -107,8 +109,12 @@ class vectorStoreHandle():
         )
         self.vector_store.save_local("./demo_index")
 
+
+start = time.time()
 VTH = vectorStoreHandle()
-
+e1 = time.time()
 docs = VTH.ask("câu chuyện kể vè nội dung gì?")
-
+e2= time.time()
 print(docs)
+
+print(f"thoi gian khoi tao {e1-start:.2f} \nthoi gian truy xuat {e2-e1:.2f}")
